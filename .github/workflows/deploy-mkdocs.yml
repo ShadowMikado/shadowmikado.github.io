@@ -19,4 +19,4 @@ jobs:
         with:
           python-version: 3.x
       - run: pip install mkdocs
-      - run: mkdocs gh-deploy -d customies-docs-site -b main -r shadowmikado.github.io
+      - run: mkdocs gh-deploy -d customies-docs-site -b master
