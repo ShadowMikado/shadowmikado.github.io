@@ -3,7 +3,7 @@ theme:
   name: readthedocs
 nav:
   - Home: index.md
-  - Custom Item Guides: custom_item.md
-  - Custom Block Guides: custom_block.md
+  - Custom Item Guides: custom_item_guides.md
+  - Custom Block Guides: custom_block_guides.md
   - Block Permutations: block_permutations.md
-  - Custom Entity Guides: custom_entity.md
+  - Custom Entity Guides: custom_entity_guides.md
