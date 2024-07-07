@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Block Permutations - Customies Docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Block Permutations";
+        var mkdocs_page_input_path = "block_permutations.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Customies Docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../custom_item_guides/">Custom Item Guides</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../custom_block_guides/">Custom Block Guides</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Block Permutations</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#what-are-permutations">What are permutations?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#how-do-they-work">How do they work?</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#rotating-blocks">Rotating Blocks</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#creating-your-own-permutations">Creating Your Own Permutations</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#getblockproperties">getBlockProperties()</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#getpermutations">getPermutations()</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#getcurrentblockproperties">getCurrentBlockProperties()</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#using-permutations">Using Permutations</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../custom_entity_guides/">Custom Entity Guides</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Customies Docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Block Permutations</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="block-permutations">Block Permutations</h1>
+<blockquote>
+<p>It is important to note that permutations are a very complex system, at least compared to the rest of the Customies
+API. For support with the Customies API, you can <a href="https://discord.gg/Tm6wGxWqgh">join our Discord</a>.</p>
+</blockquote>
+<h2 id="what-are-permutations">What are permutations?</h2>
+<p>In Minecraft, permutations are a way for a single block to behave different based on server-side data. Without
+permutations, a block can only have one possible state and behave similar to a dirt block. With permutations however,
+you can change the model or rotation of the same block to emulate the behaviour of a crop or a door etc.</p>
+<h2 id="how-do-they-work">How do they work?</h2>
+<p>When creating a block with permutations, there are two important sets of data that you must provide. The first is an
+array of block properties. Each block can have multiple block properties, and each one has a name and an array of all
+its possible values. The second set of data is an array of permutations which uses the block properties in molang
+queries to provide different block components for each different state. Both of these are sent to the client so it knows
+how to render every possible combination of the block.</p>
+<h2 id="rotating-blocks">Rotating Blocks</h2>
+<p>Customies includes a built-in <code>RotatableTrait</code> which can be used to implement horizontal rotations for your block. You
+do not need to write any extra code for it to function, and can easily be followed as an example of how permutations
+should be created.</p>
+<pre><code class="language-php">use customiesdevs\customies\block\permutations\Permutable;
+use customiesdevs\customies\block\permutations\RotatableTrait;
+use pocketmine\block\Opaque;
+
+class ExampleBlock extends Block implements Permutable {
+    use RotatableTrait;
+}
+</code></pre>
+<h2 id="creating-your-own-permutations">Creating Your Own Permutations</h2>
+<p>To get started with adding permutations to your block, you must first implement the <code>Permutable</code> interface. This
+interface requires you to implement all the methods necessary for permutations to function for a block. To help
+understand how permutations work, code from <code>RotatableTrait</code> will be used as examples.</p>
+<h3 id="getblockproperties"><code>getBlockProperties()</code></h3>
+<p>In this method you must return an array of <code>BlockProperty</code> objects which can be used to determine the state of the
+block. In the example below, it is creating a property called <code>customies:rotation</code> with the possible values
+of <code>[2, 3, 4, 5]</code>. These numbers are the values from <code>Facing::NORTH</code>, <code>Facing::SOUTH</code>, <code>Facing::WEST</code> &amp; <code>Facing::EAST</code>.
+The values do not need to be anything specific, and can use any primitive data type.</p>
+<pre><code class="language-php">public function getBlockProperties(): array {
+    return [
+        new BlockProperty(&quot;customies:rotation&quot;, [2, 3, 4, 5]),
+    ];
+}
+</code></pre>
+<h3 id="getpermutations"><code>getPermutations()</code></h3>
+<p>In this method you must return an array of <code>Permutation</code> objects which can override different components based on a
+condition of the state. In the example below, there are four different permutations which all check for a different
+value of the <code>customies:rotation</code> value that was defined in the returned block properties. Each permutation also
+contains a single <code>minecraft:rotation</code> component which rotates the block to the correct direction for the state. The
+condition string accepts molang expressions, as well
+as <a href="https://bedrock.dev/docs/stable/Molang#List%20of%20Entity%20Queries">most entity queries</a>. The different block
+components can also seen on <a href="https://bedrock.dev/docs/stable/Blocks#Block%20Components">bedrock.dev</a>.</p>
+<pre><code class="language-php">public function getPermutations(): array {
+    return [
+        (new Permutation(&quot;q.block_property('customies:rotation') == 2&quot;))
+            -&gt;withComponent(&quot;minecraft:rotation&quot;, CompoundTag::create()
+                -&gt;setFloat(&quot;x&quot;, 0)
+                -&gt;setFloat(&quot;y&quot;, 0)
+                -&gt;setFloat(&quot;z&quot;, 0)),
+        (new Permutation(&quot;q.block_property('customies:rotation') == 3&quot;))
+            -&gt;withComponent(&quot;minecraft:rotation&quot;, CompoundTag::create()
+                -&gt;setFloat(&quot;x&quot;, 0)
+                -&gt;setFloat(&quot;y&quot;, 180)
+                -&gt;setFloat(&quot;z&quot;, 0)),
+        (new Permutation(&quot;q.block_property('customies:rotation') == 4&quot;))
+            -&gt;withComponent(&quot;minecraft:rotation&quot;, CompoundTag::create()
+                -&gt;setFloat(&quot;x&quot;, 0)
+                -&gt;setFloat(&quot;y&quot;, 90)
+                -&gt;setFloat(&quot;z&quot;, 0)),
+        (new Permutation(&quot;q.block_property('customies:rotation') == 5&quot;))
+            -&gt;withComponent(&quot;minecraft:rotation&quot;, CompoundTag::create()
+                -&gt;setFloat(&quot;x&quot;, 0)
+                -&gt;setFloat(&quot;y&quot;, 270)
+                -&gt;setFloat(&quot;z&quot;, 0)),
+    ];
+}
+</code></pre>
+<h3 id="getcurrentblockproperties"><code>getCurrentBlockProperties()</code></h3>
+<p>In this method you must return an array of the server-side values which match the order and possible values of all the
+block properties for the block. In the example below, only the facing property from the trait is returned since it is
+the only block property.</p>
+<p>If the order of the values is incorrect, or invalid values are provided, runtime errors may occur when registering and
+using the blocks.</p>
+<pre><code class="language-php">public function getCurrentBlockProperties(): array {
+    return [$this-&gt;facing];
+}
+</code></pre>
+<hr>
+
+<p>After you have implemented the <code>Permutable</code> interface, there are still a few more steps that you must complete before
+your block is usable. For pocketmine to be able to save and understand the different state, you must override
+the <code>writeStateToMeta()</code>, <code>readStateFromData()</code> &amp; <code>getStateBitmask()</code> methods from the <code>Block</code> class.</p>
+<p>The first method requires translating the block properties in to a numeric meta value which pocketmine can understand.
+The <code>Permutations::toMeta()</code> method handles this conversion for you.</p>
+<p>The second method is used to load the block properties from the numeric meta value that was previously calculated.
+The <code>Permutations::fromMeta()</code> method handles the conversions for you, but you are still required to set the properties
+to the values from the returned array. The order of the returned properties will always be the same as the order of your
+defined block properties.</p>
+<p>The third and final method returns the highest bit required to represent all possible states of the block.
+The <code>Permutations::getStateBitmask()</code> method handles this calculation for you.</p>
+<pre><code class="language-php">protected function writeStateToMeta(): int {
+    return Permutations::toMeta($this);
+}
+
+public function readStateFromData(int $id, int $stateMeta): void {
+    $blockProperties = Permutations::fromMeta($this, $stateMeta);
+    $this-&gt;facing = $blockProperties[0] ?? Facing::NORTH;
+}
+
+public function getStateBitmask(): int {
+    return Permutations::getStateBitmask($this);
+}
+</code></pre>
+<h2 id="using-permutations">Using Permutations</h2>
+<p>Using your new permutations is just as simple as changing the different values for each block property when appropriate.
+In the case of <code>RotatableTrait</code>, the facing property is set in the <code>place()</code> method of the block and is automatically
+placed using the correct rotation. This method is not a requirement, and the properties can be updated from anywhere and
+will still work when setting the block in the world.</p>
+<pre><code class="language-php">public function place(BlockTransaction $tx, Item $item, Block $blockReplace, Block $blockClicked, int $face, Vector3 $clickVector, ?Player $player = null): bool {
+    if($player !== null) {
+        $this-&gt;facing = $player-&gt;getHorizontalFacing();
+    }
+    return parent::place($tx, $item, $blockReplace, $blockClicked, $face, $clickVector, $player);
+}
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../custom_block_guides/" class="btn btn-neutral float-left" title="Custom Block Guides"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../custom_entity_guides/" class="btn btn-neutral float-right" title="Custom Entity Guides">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../custom_block_guides/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../custom_entity_guides/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

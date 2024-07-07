@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Custom Item Guides - Customies Docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Custom Item Guides";
+        var mkdocs_page_input_path = "custom_item_guides.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Customies Docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Custom Item Guides</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#registering-an-item">Registering an Item</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#getting-an-item">Getting an Item</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#item-components">Item Components</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#creative-inventory">Creative Inventory</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#regulating-held-item-scale">Regulating Held Item Scale</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../custom_block_guides/">Custom Block Guides</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../block_permutations/">Block Permutations</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../custom_entity_guides/">Custom Entity Guides</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Customies Docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Custom Item Guides</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="custom-item-guides">Custom Item Guides</h1>
+<h2 id="registering-an-item">Registering an Item</h2>
+<p>Registering a custom item is as simple as registering a normal item, but the ID is calculated for you. All you need to
+do is use the <code>CustomiesItemFactory</code> class to register the item, and fetch it as you would with a vanilla item.</p>
+<pre><code class="language-php">use customiesdevs\customies\item\CustomiesItemFactory;
+
+// ...
+
+public function onEnable(): void {
+    CustomiesItemFactory::getInstance()-&gt;registerItem(Item::class, &quot;customies:example_item&quot;, &quot;Example Item&quot;);
+}
+
+// ...
+</code></pre>
+<h2 id="getting-an-item">Getting an Item</h2>
+<p>To get a custom item you need to use the <code>CustomiesItemFactory</code> instead of the regular item factory so you can get the item from the custom identifier instead of needing a numeric id.</p>
+<pre><code class="language-php">$item = CustomiesItemFactory::getInstance()-&gt;get(&quot;customies:example_item&quot;);
+</code></pre>
+<h2 id="item-components">Item Components</h2>
+<p>Custom items can also have components which are used to change the behaviour of items client side, such as making it edible or have durability etc. To get started with components, you need to implement the <code>ItemComponents</code> interface, use the <code>ItemComponentsTrait</code> and call the <code>initComponent</code> method in the constructor of your class.</p>
+<pre><code class="language-php">use customiesdevs\customies\item\ItemComponents;
+use customiesdevs\customies\item\ItemComponentsTrait;
+use pocketmine\item\Item;
+
+class ExampleItem extends Item implements ItemComponents {
+    use ItemComponentsTrait;
+
+    public function __construct() {
+
+        parent::__construct(new ItemIdentifier(ItemTypeIds::newId()), &quot;your_name_here&quot;, []);
+        $this-&gt;initComponent(&quot;your_texture_here&quot;, new CreativeInventoryInfo(CreativeInventoryInfo::CATEGORY_ITEMS));
+    }
+}
+</code></pre>
+<p>Now that you have an item with components, you can add either components or properties using the <code>addComponent</code>
+and <code>addProperty</code> methods (after initializing the item).</p>
+<pre><code class="language-diff">// ...
+
++   $this-&gt;addComponent(new DurabilityComponent(3000))
++   $this-&gt;addComponent(new MaxStackSizeComponent(1));
++   $this-&gt;addComponent(new AllowOffHandComponent(false));
+-   $this-&gt;addProperty(&quot;allow_off_hand&quot;, false)
+-   $this-&gt;addComponent(&quot;minecraft:armor&quot;, [&quot;protection&quot; =&gt; new IntTag(4)]);
+
+// ...
+</code></pre>
+<blockquote>
+<p>More information about all the different item components and properties can be found on <a href="https://docs.microsoft.com/en-us/minecraft/creator/reference/content/itemreference">docs.microsoft.com</a>.</p>
+</blockquote>
+<h2 id="creative-inventory">Creative Inventory</h2>
+<p>If you want add the item to the creative inventory, you can provide a <code>CreativeInventoryInfo</code> as the 3th argument to <code>initComponent</code>. This contains the following:
+ - Category: The base category to show the item in, for example <code>CreativeInventoryInfo::CATEGORY_EQUIPMENT</code> will put the item in the equipment category
+ - Group: The group to put the item in inside of the category, for example <code>CreativeInventoryInfo::GROUP_SWORD</code> will put the item at the end of the sword group</p>
+<pre><code class="language-php">use customiesdevs\customies\item\CreativeInventoryInfo;
+
+// ...
+
+$creativeInfo = new CreativeInventoryInfo(CreativeInventoryInfo::CATEGORY_EQUIPMENT, CreativeInventoryInfo::GROUP_SWORD);
+$this-&gt;initComponent(&quot;your_texture_here&quot;, $creativeInfo);
+
+// ...
+</code></pre>
+<blockquote>
+<p>More information about creative categories and groups can be found on <a href="https://docs.microsoft.com/en-us/minecraft/creator/reference/content/blockreference/examples/blockcomponents/minecraftblock_creative_category">docs.microsoft.com</a>.</p>
+</blockquote>
+<h2 id="regulating-held-item-scale">Regulating Held Item Scale</h2>
+<p>If you are using a custom item that has a texture larger than 16x16 pixels, you may notice the scale of the item also increases when held in a player's hand. To solve this you can use the <code>setupRenderOffsets()</code> method inside the <code>ItemComponentsTrait</code>. This requires the <code>initComponent()</code> method to first be called. The method accepts two integers for the width and height of the image, and an optional bool for if the item is hand equipped, e.g. a sword/tool.</p>
+<pre><code class="language-php">use customiesdevs\customies\item\ItemComponents;
+use customiesdevs\customies\item\ItemComponentsTrait;
+use pocketmine\item\Item;
+
+class ExampleItem extends Item implements ItemComponents {
+    use ItemComponentsTrait;
+
+    public function __construct(ItemIdentifier $idInfo) {
+
+        parent::__construct($idInfo);
+
+        $this-&gt;initComponent(&quot;your_texture_here&quot;);
+        $this-&gt;setupRenderOffsets(32, 32, true);
+    }
+}
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../custom_block_guides/" class="btn btn-neutral float-right" title="Custom Block Guides">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../custom_block_guides/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

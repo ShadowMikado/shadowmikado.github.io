@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Custom Block Guides - Customies Docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Custom Block Guides";
+        var mkdocs_page_input_path = "custom_block.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Customies Docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../custom_item_guides/">Custom Item Guides</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../custom_block_guides/">Custom Block Guides</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../block_permutations/">Block Permutations</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../custom_entity_guides/">Custom Entity Guides</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Customies Docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Custom Block Guides</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="custom-block-guides">Custom Block Guides</h1>
+<h2 id="create-custom-block">Create Custom Block</h2>
+<p>Here is an example how to create a custom block:</p>
+<pre><code class="language-php">use pocketmine\block\BlockBreakInfo;
+use pocketmine\block\BlockIdentifier;
+use pocketmine\block\Opaque;
+use pocketmine\item\Item;
+
+class CustomBlock extends Opaque{
+    public function __construct(string $name, BlockTypeInfo $typeInfo)
+    {
+        parent::__construct(new BlockIdentifier(BlockTypeIds::newId()), $name, $typeInfo);
+    }
+}
+</code></pre>
+<h2 id="basics">Basics</h2>
+<p>Registering a custom block can either be done with or without a model using the <code>CustomiesBlockFactory</code> class. Without a model all you need to do is register the block by providing a <code>Closure</code> and the identifier of the block. The closure must be of the type <code>Closure(int): Block</code>, where the int is the ID that should be used for the block. This <strong>DOES NOT</strong> allow you to use a custom ID for the block, and will cause issues if you do not use the provided value.</p>
+<pre><code class="language-php">use customiesdevs\customies\block\CustomiesBlockFactory;
+use pocketmine\block\BlockBreakInfo;
+
+// ...
+
+public function onEnable(): void {
+        $hardeness = 0.3;
+        $blockToolType = BlockToolType::PICKAXE;
+        $blastResistance = 0.1;
+        $creativeInfo = new CreativeInventoryInfo(CreativeInventoryInfo::CATEGORY_CONSTRUCTION, CreativeInventoryInfo::NONE);
+        $identifier = &quot;customies:your_custom_block&quot;;
+        CustomiesBlockFactory::getInstance()-&gt;registerBlock(static fn () =&gt; new CustomBlock(&quot;your_name_here&quot;, new BlockTypeInfo(new BlockBreakInfo($hardeness, $blockToolType, 0, $blastResistance))), $identifier, null, $creativeInfo);
+// ...
+</code></pre>
+<blockquote>
+<p>It is important to note that the provided closure is shared across threads, meaning you cannot use any variables that are not serializable types defined outside the scope of the closure.</p>
+</blockquote>
+<h2 id="getting-a-block">Getting a Block</h2>
+<p>To get a custom block you need to use the <code>CustomiesBlockFactory</code> instead of the regular block factory so you can get the block from the custom identifier instead of a numeric id.</p>
+<pre><code class="language-php">$block = CustomiesBlockFactory::getInstance()-&gt;get(&quot;customies:example_block&quot;);
+</code></pre>
+<h2 id="using-custom-models">Using Custom Models</h2>
+<p>If your block contains a different model, you can provide a <code>Model</code> as the 5th argument. A model requires the following:
+- Materials: Array of materials that define how the texture is applied to specific faces
+- Texture: Name of the texture to apply to the model
+- Origin: The origin point of the selection box. <code>Vector3(0, 0, 0)</code> is the top right corner of the block
+- Size: The size of the block in pixels. This must be between <code>Vector3(0, 0, 0)</code> and <code>Vector3(16, 16, 16)</code> as the client
+  does not support blocks being larger than this</p>
+<pre><code class="language-php">use customiesdevs\customies\block\CustomiesBlockFactory;
+use customiesdevs\customies\block\Material;
+use customiesdevs\customies\block\Model;
+use pocketmine\block\BlockBreakInfo;
+use pocketmine\math\Vector3;
+
+// ...
+
+public function onEnable(): void {
+    $material = new Material(Material::TARGET_ALL, &quot;example&quot;, Material::RENDER_METHOD_ALPHA_TEST);
+    $model = new Model([$material], &quot;geometry.example&quot;, new Vector3(-8, 0, -8), new Vector3(16, 16, 16));
+    CustomiesBlockFactory::getInstance()-&gt;registerBlock(static fn () =&gt; new CustomBlock(&quot;your_name_here&quot;, new BlockTypeInfo(new BlockBreakInfo(0.3, BlockToolType::PICKAXE, 0, 0.1))), &quot;customies:your_custom_block&quot;&quot;, $model, new CreativeInventoryInfo(CreativeInventoryInfo::CATEGORY_CONSTRUCTION, CreativeInventoryInfo::NONE));
+}
+
+// ...
+</code></pre>
+<blockquote>
+<p>More information about materials and the different properties can be found on <a href="https://docs.microsoft.com/en-us/minecraft/creator/reference/content/blockreference">docs.microsoft.com</a>.</p>
+</blockquote>
+<h2 id="creative-inventory">Creative Inventory</h2>
+<p>Try reading <a href="/custom_item#creative-inventory">Item Creative Inventory</a> it is the same concept.</p>
+<h2 id="updating-from-v107-newer-versions">Updating from v1.0.7 -&gt; newer versions</h2>
+<p>In Customise v1.1.0, the method for registering custom blocks changed to be more dynamic and user friendly. Instead of providing the name and <code>BlockBreakInfo</code> to the <code>registerBlock()</code> method, you are now required to provide a <code>Closure</code> which returns a <code>Block</code> with the provided ID. Below is an example difference between the two versions for registering a custom block.</p>
+<pre><code class="language-diff">use customiesdevs\customies\block\CustomiesBlockFactory;
+use pocketmine\block\BlockBreakInfo;
+
+// ...
+
+public function onEnable(): void {
+-   CustomiesBlockFactory::getInstance()-&gt;registerBlock(Block::class, &quot;customies:example_block&quot;, &quot;Example Block&quot;, new BlockBreakInfo(1));
++   CustomiesBlockFactory::getInstance()-&gt;registerBlock(static fn () =&gt; new CustomBlock(&quot;your_name_here&quot;, new BlockTypeInfo(new BlockBreakInfo(0.3, BlockToolType::PICKAXE, 0, 0.1))), &quot;customies:your_custom_block&quot;&quot;, null, new CreativeInventoryInfo(CreativeInventoryInfo::CATEGORY_CONSTRUCTION, CreativeInventoryInfo::NONE));
+
+}
+
+// ...
+</code></pre>
+<blockquote>
+<p>You can learn more about this change and why it was necessary <a href="https://github.com/CustomiesDevs/Customies/pull/37">here</a>.</p>
+</blockquote>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
