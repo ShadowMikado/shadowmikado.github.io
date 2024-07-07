@@ -1,0 +1,9 @@
+site_name: Customies Docs
+theme:
+  name: readthedocs
+nav:
+  - Home: index.md
+  - Custom Item Guides: custom_item.md
+  - Custom Block Guides: custom_block.md
+  - Block Permutations: block_permutations.md
+  - Custom Entity Guides: custom_entity.md
